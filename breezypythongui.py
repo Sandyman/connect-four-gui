@@ -40,10 +40,10 @@ class EasyFrame(tkinter.Frame):
     """Represents an application window."""
 
     def __init__(self, title = "", width = None, height = None,
-                 background = "white", resizable = True):
+                 background = "white", resizable = True, **kwargs):
         """Will shrink wrap the window around the widgets if width
         and height are not provided."""
-        tkinter.Frame.__init__(self)
+        tkinter.Frame.__init__(self, **kwargs)
         if width and height:
             self.setSize(width, height)
         self.master.title(title)
@@ -544,10 +544,10 @@ class EasyCanvas(tkinter.Canvas):
     as well as methods for responding to mouse events in the canvas."""
 
     def __init__(self, parent, width = None, height = None,
-                 background = "white"):
+                 background = "white", **kwargs):
         tkinter.Canvas.__init__(self, parent,
                                 width = width, height = height,
-                                background = background)
+                                background = background, **kwargs)
         self.bind("<Double-Button-1>", self.mouseDoubleClicked)
         self.bind("<ButtonPress-1>", self.mousePressed)
         self.bind("<ButtonRelease-1>", self.mouseReleased)
@@ -602,10 +602,10 @@ class EasyCanvas(tkinter.Canvas):
         return item
 
     def drawOval(self, x0, y0, x1, y1,
-                 outline = "black", fill = None):
+                 outline = "black", fill = None, **kwargs):
         """Draws an ovel within the given corner points,
         with the given outline color and fill color."""
-        item = self.create_oval(x0, y0, x1, y1)
+        item = self.create_oval(x0, y0, x1, y1, **kwargs)
         self.itemconfig(item, outline = outline, fill = fill)
         return item
 
