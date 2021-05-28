@@ -48,6 +48,18 @@ class GameBoard(EasyCanvas):
 
                 self.__cells[col][row] = circle
 
+    def __on_click(self, col, row):
+        """
+        Click event occurred. Calls the click handler is available.
+        :param col: column of cell that received mouse click
+        :param row: row of cell that received mouse click
+        :return: None
+        """
+        logging.info(f'Click event at col={col},row={row}')
+
+        if self.__on_click is not None:
+            self.__on_click(col, row)
+
     def set_click_handler(self, handler):
         """
         Set the click handler. The click handler should accept two
@@ -67,18 +79,6 @@ class GameBoard(EasyCanvas):
         """
         cell = self.__cells[col][row]
         self.itemconfig(cell, fill=colour)
-
-    def __on_click(self, col, row):
-        """
-        Click event occurred. Calls the click handler is available.
-        :param col: column of cell that received mouse click
-        :param row: row of cell that received mouse click
-        :return: None
-        """
-        logging.info(f'Click event at col={col},row={row}')
-
-        if self.__on_click is not None:
-            self.__on_click(col, row)
 
 
 def main():
