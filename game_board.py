@@ -13,13 +13,15 @@ class GameBoard(EasyFrame):
         canvas = self.addCanvas(width=width-5, height=height-5, background='blue')
         self.__canvas = canvas
 
+        self.__on_click = None
+
         self.__cells = [list([None] * 6) for _ in range(7)]
 
         def create_click(c, r):
             """Create click handler for cell.
             """
             def click(_):
-                self.on_click(c, r)
+                self.__on_click(c, r)
 
             return click
 
@@ -43,10 +45,37 @@ class GameBoard(EasyFrame):
 
                 self.__cells[col][row] = circle
 
-    def on_click(self, col, row):
-        logging.info(f'Click event at col={col},row={row}')
+    def set_click_handler(self, handler):
+        """
+        Set the click handler. The click handler should accept two
+        arguments: column and row.
+        :param handler: Function that handles click events
+        :return: None
+        """
+        self.__on_click = handler
+
+    def update_cell(self, col, row, colour):
+        """
+        Update a cell at location (col, row) with a certain colour.
+        :param col: column of cell to update
+        :param row: row of cell to update
+        :param colour: colour to set in selected cell
+        :return: None
+        """
         cell = self.__cells[col][row]
-        self.__canvas.itemconfig(cell, fill=sample(['yellow', 'red'], k=1)[0])
+        self.__canvas.itemconfig(cell, fill=colour)
+
+    def __on_click(self, col, row):
+        """
+        Click event occurred. Calls the click handler is available.
+        :param col: column of cell that received mouse click
+        :param row: row of cell that received mouse click
+        :return: None
+        """
+        logging.info(f'Click event at col={col},row={row}')
+
+        if self.__on_click is not None:
+            self.__on_click(col, row)
 
 
 if __name__ == '__main__':
