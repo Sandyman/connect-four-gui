@@ -1,25 +1,23 @@
 import logging
-from breezypythongui import EasyFrame
+from breezypythongui import EasyCanvas, EasyFrame
 
 logging.basicConfig(level=logging.INFO)
 
 
-class GameBoard(EasyFrame):
+class GameBoard(EasyCanvas):
     """
     This class creates a GameBoard for the Connect4 game. It creates
-    7 columns of each 6 cells. Each cell can be set to a certain colour
+    7 columns of each 6 cells. Each cell can be set to any colour
     using the method {update_cell}. If a cell is clicked, the click
     handler is called (if it is set).
     """
-    def __init__(self, width, height):
-        EasyFrame.__init__(self, title='Connect 4!', width=width, height=height,
-                           background='red')
+    def __init__(self, parent, width, height):
+        EasyCanvas.__init__(self, parent, width=width, height=height, background='blue')
 
-        canvas = self.addCanvas(width=width-5, height=height-5, background='blue')
-        self.__canvas = canvas
-
+        # Placeholder for click handler
         self.__on_click = None
 
+        # This 2D list will hold all cells
         self.__cells = [list([None] * 6) for _ in range(7)]
 
         def create_click(c, r):
@@ -38,15 +36,15 @@ class GameBoard(EasyFrame):
                 y = 20 + row * diam
 
                 # Give the impression of depth
-                canvas.drawOval(x+2, y, x+diam-8, y+diam-8,
-                                outline='black', fill='black')
+                self.drawOval(x+2, y, x+diam-8, y+diam-8,
+                              outline='black', fill='black')
 
                 # This circle may become a coloured chip
-                circle = canvas.drawOval(x, y, x+diam-10, y+diam-10,
-                                         outline='black', fill=fill)
-                canvas.itemconfig(circle, tags=f'circle-{col}-{row}')
-                canvas.tag_bind(f'circle-{col}-{row}', '<ButtonRelease-1>',
-                                create_click(col, row))
+                circle = self.drawOval(x, y, x+diam-10, y+diam-10,
+                                       outline='black', fill=fill)
+                self.tag_bind(f'circle-{col}-{row}', '<ButtonRelease-1>',
+                              create_click(col, row))
+                self.itemconfig(circle, tags=f'circle-{col}-{row}')
 
                 self.__cells[col][row] = circle
 
@@ -68,7 +66,7 @@ class GameBoard(EasyFrame):
         :return: None
         """
         cell = self.__cells[col][row]
-        self.__canvas.itemconfig(cell, fill=colour)
+        self.itemconfig(cell, fill=colour)
 
     def __on_click(self, col, row):
         """
@@ -86,7 +84,10 @@ class GameBoard(EasyFrame):
 def main():
     colours = ['red', 'yellow']
     current = 0
-    game = GameBoard(730, 630)
+
+    f = EasyFrame()
+    game = GameBoard(f, 730, 630)
+    f.addCanvas(game)
 
     def handler(col, row):
         nonlocal current
@@ -94,7 +95,7 @@ def main():
         current = 1 - current
 
     game.set_click_handler(handler)
-    game.mainloop()
+    f.mainloop()
 
 
 if __name__ == '__main__':
