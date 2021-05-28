@@ -83,16 +83,19 @@ class GameBoard(EasyFrame):
             self.__on_click(col, row)
 
 
-colours = ['red', 'yellow']
-current = 0
-
-if __name__ == '__main__':
+def main():
+    colours = ['red', 'yellow']
+    current = 0
     game = GameBoard(730, 630)
 
     def handler(col, row):
-        global current
+        nonlocal current
         game.update_cell(col, row, colours[current])
         current = 1 - current
 
     game.set_click_handler(handler)
     game.mainloop()
+
+
+if __name__ == '__main__':
+    main()
