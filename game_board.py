@@ -12,20 +12,22 @@ class GameBoard(EasyCanvas):
     handler is called (if it is set).
     """
     def __init__(self, parent, width, height):
-        EasyCanvas.__init__(self, parent, width=width, height=height, background='blue')
+        EasyCanvas.__init__(self, parent, width=width, height=height, background='blue',
+                            borderwidth=0, highlightthickness=0)
 
         # Placeholder for click handler
-        self.__on_click = None
+        self.__click_handler = None
 
         # This 2D list will hold all cells
         self.__cells = [list([None] * 6) for _ in range(7)]
 
-        diam = 100
+        diam = 80
+        offs = 15
         for col in range(7):
             for row in range(6):
-                fill = '#707080'
-                x = 20 + col * diam
-                y = 20 + row * diam
+                fill = '#707080'  # greyish
+                x = offs + col * diam
+                y = offs + row * diam
 
                 # Give the impression of depth
                 self.drawOval(x+2, y, x+diam-8, y+diam-8,
@@ -34,9 +36,10 @@ class GameBoard(EasyCanvas):
                 # This circle may become a coloured chip
                 circle = self.drawOval(x, y, x+diam-10, y+diam-10,
                                        outline='black', fill=fill)
-                self.tag_bind(f'circle-{col}-{row}', '<ButtonRelease-1>',
-                              lambda _, c=col, r=row: self.__on_click(c, r))
-                self.itemconfig(circle, tags=f'circle-{col}-{row}')
+                tag = f'gb-circle-{col}-{row}'
+                self.tag_bind(tag, '<ButtonRelease-1>',
+                              lambda _, c=col, r=row: self.__click_handler(c, r))
+                self.itemconfig(circle, tags=tag)
 
                 self.__cells[col][row] = circle
 
@@ -49,8 +52,8 @@ class GameBoard(EasyCanvas):
         """
         logging.info(f'Click event at col={col},row={row}')
 
-        if self.__on_click is not None:
-            self.__on_click(col, row)
+        if self.__click_handler is not None:
+            self.__click_handler(col, row)
 
     def set_click_handler(self, handler):
         """
@@ -59,7 +62,7 @@ class GameBoard(EasyCanvas):
         :param handler: Function that handles click events
         :return: None
         """
-        self.__on_click = handler
+        self.__click_handler = handler
 
     def update_cell(self, col, row, colour):
         """
