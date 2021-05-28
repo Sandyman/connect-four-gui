@@ -1,11 +1,16 @@
 import logging
-from random import sample
 from breezypythongui import EasyFrame
 
 logging.basicConfig(level=logging.INFO)
 
 
 class GameBoard(EasyFrame):
+    """
+    This class creates a GameBoard for the Connect4 game. It creates
+    7 columns of each 6 cells. Each cell can be set to a certain colour
+    using the method {update_cell}. If a cell is clicked, the click
+    handler is called (if it is set).
+    """
     def __init__(self, width, height):
         EasyFrame.__init__(self, title='Connect 4!', width=width, height=height,
                            background='red')
@@ -78,6 +83,16 @@ class GameBoard(EasyFrame):
             self.__on_click(col, row)
 
 
+colours = ['red', 'yellow']
+current = 0
+
 if __name__ == '__main__':
     game = GameBoard(730, 630)
+
+    def handler(col, row):
+        global current
+        game.update_cell(col, row, colours[current])
+        current = 1 - current
+
+    game.set_click_handler(handler)
     game.mainloop()
