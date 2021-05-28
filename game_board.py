@@ -20,14 +20,6 @@ class GameBoard(EasyCanvas):
         # This 2D list will hold all cells
         self.__cells = [list([None] * 6) for _ in range(7)]
 
-        def create_click(c, r):
-            """Create click handler for cell.
-            """
-            def click(_):
-                self.__on_click(c, r)
-
-            return click
-
         diam = 100
         for col in range(7):
             for row in range(6):
@@ -43,7 +35,7 @@ class GameBoard(EasyCanvas):
                 circle = self.drawOval(x, y, x+diam-10, y+diam-10,
                                        outline='black', fill=fill)
                 self.tag_bind(f'circle-{col}-{row}', '<ButtonRelease-1>',
-                              create_click(col, row))
+                              lambda _, c=col, r=row: self.__on_click(c, r))
                 self.itemconfig(circle, tags=f'circle-{col}-{row}')
 
                 self.__cells[col][row] = circle
