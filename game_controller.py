@@ -44,6 +44,9 @@ class GameController:
         selected_column.append(self.__current_colour)
 
         winner = self.__check_four_in_a_row(column, row)
+        if winner:
+            for col in range(self.COLUMNS):
+                self.__drop_row.disable_column(col)
 
         # Disable the column if it's full
         if len(selected_column) == self.ROWS:
