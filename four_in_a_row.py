@@ -33,14 +33,13 @@ class FourInARow:
         self.__rows = rows
 
         # Get all possible "four in a row"s in all directions
-        self.__fours = list()
-        self.__get_horizontals()
-        self.__get_verticals()
-        self.__get_diagonals()
+        fours = list()
+        fours.extend(self.__get_horizontals())
+        fours.extend(self.__get_verticals())
+        fours.extend(self.__get_diagonals())
 
         # Map all possible "four in a row"s to individual cells
-        self.__fours_map = {}
-        self.__map_fours()
+        self.__fours_map = self.__map_fours(fours)
 
     def __getitem__(self, key):
         """
@@ -50,7 +49,7 @@ class FourInARow:
         """
         return self.__fours_map[key]
 
-    def __map_fours(self):
+    def __map_fours(self, fours):
         """
         Map each of the "four in a row"s to the cells that they
         contain to create a dictionary of "four in a row"s. The
@@ -71,28 +70,28 @@ class FourInARow:
             :param val: The value to use as key and as filtering item
             :return: Updated accumulator
             """
-            acc[val] = list(filter(lambda z: val in z, self.__fours))
+            acc[val] = list(filter(lambda z: val in z, fours))
             return acc
 
-        reduce(st, all_cells, self.__fours_map)
+        return reduce(st, all_cells, {})
 
     def __get_horizontals(self):
         """
         Get all the possible horizontal "four in a row"s.
         """
         cols, rows = self.__columns, self.__rows
-        self.__fours.extend([
+        return [
             tuple((col + i, row) for i in range(4)) for col in range(cols - 3) for row in range(rows - 3)
-        ])
+        ]
 
     def __get_verticals(self):
         """
         Get all the possible vertical "four in a row"s.
         """
         cols, rows = self.__columns, self.__rows
-        self.__fours.extend([
+        return [
             tuple((col, row + i) for i in range(4)) for col in range(cols) for row in range(rows - 3)
-        ])
+        ]
 
     def __get_diagonals(self):
         """
@@ -105,7 +104,7 @@ class FourInARow:
                 diagonals.append(tuple((col + i, row + i) for i in range(4)))
                 diagonals.append(tuple((cols - (col + i + 1), row + i) for i in range(4)))
 
-        self.__fours.extend(diagonals)
+        return diagonals
 
 
 def main():
