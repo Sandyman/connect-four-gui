@@ -17,15 +17,15 @@ class FourInARow:
     will be raised.
 
     The index operator returns a list of tuples of tuples, for
-    example: [
-        ((0,0),(1,0),(2,0),(3,0)),
-        ...,
-        ((0,0),(0,1),(0,2),(0,3)),
+    example:
+    (0, 0) => [
+        ((0, 0), (1, 0), (2, 0), (3, 0)),
+        ((0, 0), (1, 1), (2, 2), (3, 3)),
+        ((0, 0), (0, 1), (0, 2), (0, 3)),
     ]
 
     where each tuple contains four tuples of the form (col, row).
     """
-
     def __init__(self, cols, rows):
         assert cols >= 4 and rows >= 4
 
