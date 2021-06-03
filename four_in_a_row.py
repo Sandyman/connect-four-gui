@@ -34,9 +34,9 @@ class FourInARow:
 
         # Get all possible "four in a row"s in all directions
         fours = list()
-        fours.extend(self.__get_horizontals())
-        fours.extend(self.__get_verticals())
-        fours.extend(self.__get_diagonals())
+        fours.extend(self.__get_horizontal_fours())
+        fours.extend(self.__get_vertical_fours())
+        fours.extend(self.__get_diagonal_fours())
 
         # Map all possible "four in a row"s to individual cells
         self.__fours_map = self.__map_fours(fours)
@@ -75,7 +75,7 @@ class FourInARow:
 
         return reduce(st, all_cells, {})
 
-    def __get_horizontals(self):
+    def __get_horizontal_fours(self):
         """
         Get all the possible horizontal "four in a row"s.
         """
@@ -84,7 +84,7 @@ class FourInARow:
             tuple((col + i, row) for i in range(4)) for col in range(cols - 3) for row in range(rows - 3)
         ]
 
-    def __get_verticals(self):
+    def __get_vertical_fours(self):
         """
         Get all the possible vertical "four in a row"s.
         """
@@ -93,7 +93,7 @@ class FourInARow:
             tuple((col, row + i) for i in range(4)) for col in range(cols) for row in range(rows - 3)
         ]
 
-    def __get_diagonals(self):
+    def __get_diagonal_fours(self):
         """
         Get all the possible diagonal "four in a row"s.
         """
