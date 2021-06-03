@@ -71,18 +71,19 @@ class GameController:
         tu = column, row
         ccol = self.__current_colour
 
-        # Get the list of potential "four in a row"s that may be winner
+        # Get the list of potential "four in a row"s that
+        # contain the updated cell
         fours_to_check = self.__four_in_a_row[tu]
         for four in fours_to_check:
             for c, r in four:
                 try:
                     cell_colour = self.__columns[c][r]
                 except IndexError:
-                    logger.warning('Unused cell. Moving on.')
+                    logger.warning('Empty cell. Moving on.')
                     break
                 else:
                     if cell_colour != ccol:
-                        logger.warning('Wrong colour')
+                        logger.warning('Different colour. Moving on.')
                         break
             else:
                 logger.info(f'Found four {ccol} in row!')
