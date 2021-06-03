@@ -63,4 +63,3 @@ class GameController:
             self.__current_colour = self.__player_2_colour
 
         self.__drop_row.set_active_colour(self.__current_colour)
-
