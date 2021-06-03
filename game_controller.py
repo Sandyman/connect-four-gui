@@ -12,7 +12,7 @@ class GameController:
     ROWS = 6
 
     def __init__(self, drop_row: DropRow, game_board: GameBoard, p1='yellow', p2='red'):
-        self.__four_in_a_row = FourInARow(cols=7, rows=6)
+        self.__four_in_a_row = FourInARow(cols=self.COLUMNS, rows=self.ROWS)
         self.__drop_row = drop_row
         self.__game_board = game_board
 
@@ -43,18 +43,22 @@ class GameController:
         self.__game_board.update_cell(column, row, self.__current_colour)
         selected_column.append(self.__current_colour)
 
+        # Check to see if we have a winner after this move
         winner = self.__check_four_in_a_row(column, row)
         if winner:
+            logger.info('We have a winner!')
             for col in range(self.COLUMNS):
                 self.__drop_row.disable_column(col)
 
-        # Disable the column if it's full
-        if len(selected_column) == self.ROWS:
-            logger.info(f'Disabling column {column} since it\'s full.')
-            self.__drop_row.disable_column(column)
+            # TODO: Show message that we have a winner
+        else:
+            # Disable the column if it's full
+            if len(selected_column) == self.ROWS:
+                logger.info(f'Disabling column {column} since it\'s full.')
+                self.__drop_row.disable_column(column)
 
-        # Next player is up
-        self.__switch_player()
+            # Next player is up
+            self.__switch_player()
 
     def __check_four_in_a_row(self, column, row):
         """
@@ -74,14 +78,14 @@ class GameController:
                 try:
                     cell_colour = self.__columns[c][r]
                 except IndexError:
-                    logger.warning('Unused cell')
+                    logger.warning('Unused cell. Moving on.')
                     break
                 else:
                     if cell_colour != ccol:
                         logger.warning('Wrong colour')
                         break
             else:
-                logger.info('Found four in row!')
+                logger.info(f'Found four {ccol} in row!')
                 return True
 
         logger.info('No four in a row this time.')
