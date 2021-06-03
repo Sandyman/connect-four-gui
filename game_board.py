@@ -11,6 +11,8 @@ class GameBoard(EasyCanvas):
     using the method {update_cell}. If a cell is clicked, the click
     handler is called (if it is set).
     """
+    DEFAULT_COLOUR = '#707080'
+
     def __init__(self, parent, width, height):
         EasyCanvas.__init__(self, parent, width=width, height=height, background='blue',
                             borderwidth=0, highlightthickness=0)
@@ -25,7 +27,8 @@ class GameBoard(EasyCanvas):
         offs = 15
         for col in range(7):
             for row in range(6):
-                fill = '#707080'  # greyish
+                row = 5 - row
+                fill = self.DEFAULT_COLOUR  # greyish
                 x = offs + col * diam
                 y = offs + row * diam
 
@@ -36,19 +39,23 @@ class GameBoard(EasyCanvas):
                 # This circle may become a coloured chip
                 circle = self.drawOval(x, y, x+diam-10, y+diam-10,
                                        outline='black', fill=fill)
-                tag = f'gb-circle-{col}-{row}'
+                self.__cells[col][row] = circle
+
+                # Create tag for circle
+                tag = f'gb-circle-{col}-{5 - row}'
+
+                # Bind ButtonRelease event handler to tag
                 self.tag_bind(tag, '<ButtonRelease-1>',
                               lambda _, c=col, r=row: self.__click_handler(c, r))
-                self.itemconfig(circle, tags=tag)
 
-                self.__cells[col][row] = circle
+                # Assign tag to circle
+                self.itemconfig(circle, tags=tag)
 
     def __on_click(self, col, row):
         """
         Click event occurred. Calls the click handler is available.
         :param col: column of cell that received mouse click
         :param row: row of cell that received mouse click
-        :return: None
         """
         logging.info(f'Click event at col={col},row={row}')
 
@@ -60,19 +67,17 @@ class GameBoard(EasyCanvas):
         Set the click handler. The click handler should accept two
         arguments: column and row.
         :param handler: Function that handles click events
-        :return: None
         """
         self.__click_handler = handler
 
-    def update_cell(self, col, row, colour):
+    def update_cell(self, col, row, colour=DEFAULT_COLOUR):
         """
         Update a cell at location (col, row) with a certain colour.
         :param col: column of cell to update
         :param row: row of cell to update
         :param colour: colour to set in selected cell
-        :return: None
         """
-        cell = self.__cells[col][row]
+        cell = self.__cells[col][5 - row]
         self.itemconfig(cell, fill=colour)
 
 
@@ -81,7 +86,7 @@ def main():
     current = 0
 
     f = EasyFrame()
-    game = GameBoard(f, 730, 630)
+    game = GameBoard(f, 590, 510)
     f.addCanvas(game)
 
     def handler(col, row):
