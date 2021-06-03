@@ -43,6 +43,8 @@ class GameController:
         self.__game_board.update_cell(column, row, self.__current_colour)
         selected_column.append(self.__current_colour)
 
+        winner = self.__check_four_in_a_row(column, row)
+
         # Disable the column if it's full
         if len(selected_column) == self.ROWS:
             logger.info(f'Disabling column {column} since it\'s full.')
@@ -50,6 +52,37 @@ class GameController:
 
         # Next player is up
         self.__switch_player()
+
+    def __check_four_in_a_row(self, column, row):
+        """
+        Check whether we have four of the same colour in a row.
+        Note that "four in a row" means four adjacent chips of
+        the same colour in *any* direction.
+        :param column: Column of the location that was played
+        :param row: Row of the location that was played
+        """
+        tu = column, row
+        ccol = self.__current_colour
+
+        # Get the list of potential "four in a row"s that may be winner
+        fours_to_check = self.__four_in_a_row[tu]
+        for four in fours_to_check:
+            for c, r in four:
+                try:
+                    cell_colour = self.__columns[c][r]
+                except IndexError:
+                    logger.warning('Unused cell')
+                    break
+                else:
+                    if cell_colour != ccol:
+                        logger.warning('Wrong colour')
+                        break
+            else:
+                logger.info('Found four in row!')
+                return True
+
+        logger.info('No four in a row this time.')
+        return False
 
     def __switch_player(self):
         """
