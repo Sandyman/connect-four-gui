@@ -9,24 +9,27 @@ class FourInARow:
     need to be checked for "four in a row" that contains the
     individual cell. For example, if the updated cell is (0,0),
     which is the bottom-left cell, then we only need to check
-    three "four in a rows"s: horizontal, vertical, and diagonal.
+    three "four in a rows"s: one horizontal, one vertical, and
+    one diagonal.
 
     This class makes the index operator available. The key for
     it is a (column, row)-tuple, for example (4, 3). No validation
-    takes place, if the provided key does not exist, a KeyError
+    takes place; if the provided key does not exist, a KeyError
     will be raised.
 
     The index operator returns a list of tuples of tuples, for
     example:
+
     (0, 0) => [
-        ((0, 0), (1, 0), (2, 0), (3, 0)),
-        ((0, 0), (1, 1), (2, 2), (3, 3)),
-        ((0, 0), (0, 1), (0, 2), (0, 3)),
+        ((0, 0), (1, 0), (2, 0), (3, 0)),  # horizontal
+        ((0, 0), (1, 1), (2, 2), (3, 3)),  # diagonal
+        ((0, 0), (0, 1), (0, 2), (0, 3)),  # vertical
     ]
 
     where each tuple contains four tuples of the form (col, row).
     """
     def __init__(self, cols, rows):
+        # Seems harsh, but it is called FourInARow...
         assert cols >= 4 and rows >= 4
 
         self.__columns = cols
@@ -57,21 +60,21 @@ class FourInARow:
         "four in a row"s that could possibly be made when that
         cell is updated.
         """
+        def st(acc, key):
+            """
+            Create a list of "four in a row"s that contain the cell {key}
+            :param acc: Accumulator (dictionary) to update
+            :param key: The value to use as key and as filtering item
+            :return: Updated accumulator
+            """
+            acc[key] = list(filter(lambda z: key in z, fours))
+            return acc
+
         # Get a list of all cells as (col,row)-tuples
         all_cells = [(col, row)
                      for col in range(self.__columns)
                      for row in range(self.__rows)
                      ]
-
-        def st(acc, val):
-            """
-            Create a list of "four in a row"s that contain the cell {val}
-            :param acc: Accumulator (dictionary) to update
-            :param val: The value to use as key and as filtering item
-            :return: Updated accumulator
-            """
-            acc[val] = list(filter(lambda z: val in z, fours))
-            return acc
 
         return reduce(st, all_cells, {})
 
@@ -81,7 +84,7 @@ class FourInARow:
         """
         cols, rows = self.__columns, self.__rows
         return [
-            tuple((col + i, row) for i in range(4)) for col in range(cols - 3) for row in range(rows - 3)
+            tuple((col + i, row) for i in range(4)) for col in range(cols - 3) for row in range(rows)
         ]
 
     def __get_vertical_fours(self):
