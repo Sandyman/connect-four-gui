@@ -46,7 +46,7 @@ class GameBoard(EasyCanvas):
 
                 # Bind ButtonRelease event handler to tag
                 self.tag_bind(tag, '<ButtonRelease-1>',
-                              lambda _, c=col, r=row: self.__click_handler(c, r))
+                              lambda _, c=col, r=row: self.__on_click(c, r))
 
                 # Assign tag to circle
                 self.itemconfig(circle, tags=tag)
