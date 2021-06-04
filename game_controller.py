@@ -80,7 +80,7 @@ class GameController:
                 self.__drop_row.disable_column(column)
 
             # Next player is up
-            self.__switch_player()
+            self.__next_player()
 
     def __flash_cells(self, four, colour):
         """
@@ -95,6 +95,7 @@ class GameController:
             for col, row in four:
                 self.__game_board.update_cell(col, self.__row(row), colours[ccol])
 
+            # Wait for a really short time
             sleep(randint(30, 80) / 1000)
             ccol = 1 - ccol
 
@@ -128,7 +129,7 @@ class GameController:
         logger.info('No four in a row this time.')
         return None
 
-    def __switch_player(self):
+    def __next_player(self):
         """
         Switch player. This also switches the colour for convenience.
         """
