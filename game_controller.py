@@ -1,4 +1,6 @@
 import logging
+from random import randint
+from time import sleep
 from drop_row import DropRow
 from four_in_a_row import FourInARow
 from game_board import GameBoard
@@ -10,6 +12,8 @@ logger.setLevel(logging.INFO)
 class GameController:
     COLUMNS = 7
     ROWS = 6
+
+    DARK_GREY = '#505070'
 
     def __init__(self, drop_row: DropRow, game_board: GameBoard, p1='yellow', p2='red'):
         self.__four_in_a_row = FourInARow(cols=self.COLUMNS, rows=self.ROWS)
@@ -45,10 +49,12 @@ class GameController:
 
         # Check to see if we have a winner after this move
         winner = self.__check_four_in_a_row(column, row)
-        if winner:
+        if winner is not None:
             logger.info('We have a winner!')
             for col in range(self.COLUMNS):
                 self.__drop_row.disable_column(col)
+
+            self.__flash_cells(winner, self.__current_colour)
 
             # TODO: Show message that we have a winner
         else:
@@ -60,6 +66,22 @@ class GameController:
             # Next player is up
             self.__switch_player()
 
+    def __flash_cells(self, four, colour):
+        """
+        Flash cells to indicate where the four in a row was found.
+        :param four: The cells that make four in a row
+        :param colour: Winning colour
+        """
+        colours = [colour, self.DARK_GREY]
+        ccol = 0
+
+        for _ in range(1, 14):
+            for col, row in four:
+                self.__game_board.update_cell(col, row, colours[ccol])
+
+            sleep(randint(30, 80) / 1000)
+            ccol = 1 - ccol
+
     def __check_four_in_a_row(self, column, row):
         """
         Check whether we have four of the same colour in a row.
@@ -67,6 +89,7 @@ class GameController:
         the same colour in *any* direction.
         :param column: Column of the location that was played
         :param row: Row of the location that was played
+        :return: None if no winner found, tuple of cells otherwise
         """
         tu = column, row
         ccol = self.__current_colour
@@ -87,10 +110,10 @@ class GameController:
                         break
             else:
                 logger.info(f'Found four {ccol} in row!')
-                return True
+                return four
 
         logger.info('No four in a row this time.')
-        return False
+        return None
 
     def __switch_player(self):
         """

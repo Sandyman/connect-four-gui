@@ -79,6 +79,7 @@ class GameBoard(EasyCanvas):
         """
         cell = self.__cells[col][5 - row]
         self.itemconfig(cell, fill=colour)
+        self.master.update()
 
 
 def main():
