@@ -20,17 +20,23 @@ class GameController:
         self.__drop_row = drop_row
         self.__game_board = game_board
 
-        self.__player_1_colour = p1
-        self.__player_2_colour = p2
+        self.__player_colours = {1: p1, 2: p2}
 
         self.__current_player = 1
-        self.__current_colour = p1
 
         self.__drop_row.set_active_colour(self.__current_colour)
 
         drop_row.set_click_handler(self.__column_clicked)
 
         self.__columns = [list() for _ in range(self.COLUMNS)]
+
+    @property
+    def __current_colour(self):
+        """
+        Get the current colour based on the current player
+        :return: Colour for current player
+        """
+        return self.__player_colours[self.__current_player]
 
     def __column_clicked(self, column):
         logger.info(f'Column {column} clicked!')
@@ -48,13 +54,15 @@ class GameController:
         selected_column.append(self.__current_colour)
 
         # Check to see if we have a winner after this move
-        winner = self.__check_four_in_a_row(column, row)
-        if winner is not None:
+        winning_four = self.__check_four_in_a_row(column, row)
+        if winning_four is not None:
             logger.info('We have a winner!')
-            for col in range(self.COLUMNS):
-                self.__drop_row.disable_column(col)
 
-            self.__flash_cells(winner, self.__current_colour)
+            # Disable all columns at once
+            self.__drop_row.disable_column(column=None)
+
+            # Visual indication of the winning row
+            self.__flash_cells(winning_four, self.__current_colour)
 
             # TODO: Show message that we have a winner
         else:
@@ -92,25 +100,22 @@ class GameController:
         :return: None if no winner found, tuple of cells otherwise
         """
         tu = column, row
+        cols = self.__columns
         ccol = self.__current_colour
 
         # Get the list of potential "four in a row"s that
         # contain the updated cell
         fours_to_check = self.__four_in_a_row[tu]
         for four in fours_to_check:
-            for c, r in four:
-                try:
-                    cell_colour = self.__columns[c][r]
-                except IndexError:
-                    logger.warning('Empty cell. Moving on.')
-                    break
-                else:
-                    if cell_colour != ccol:
-                        logger.warning('Different colour. Moving on.')
-                        break
+            try:
+                row = list(filter(lambda x: cols[x[0]][x[1]] == ccol, four))
+            except IndexError:
+                logger.warning('Empty cell encountered. Moving on.')
+                continue
             else:
-                logger.info(f'Found four {ccol} in row!')
-                return four
+                if len(row) == 4:
+                    logger.info(f'Found four {ccol} in row!')
+                    return four
 
         logger.info('No four in a row this time.')
         return None
@@ -119,11 +124,5 @@ class GameController:
         """
         Switch player. This also switches the colour for convenience.
         """
-        self.__current_player = 2 if self.__current_player == 1 else 1
-
-        if self.__current_player == 1:
-            self.__current_colour = self.__player_1_colour
-        else:
-            self.__current_colour = self.__player_2_colour
-
+        self.__current_player = 3 - self.__current_player
         self.__drop_row.set_active_colour(self.__current_colour)

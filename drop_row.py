@@ -68,12 +68,23 @@ class DropRow(EasyCanvas):
             self.itemconfig(circle, tags=tag)
             self.__cells[col] = circle
 
-    def disable_column(self, column):
+    def disable_column(self, column=None):
         """
         Disable a column. This will set the highlight colour of the
         cell to None. It will also prevent click events from being
         generated any further.
         :param column: Column to change colour for (default=all)
+        """
+        if column is not None:
+            self.__disable_single_column(column)
+        else:
+            for column in range(self.__n_columns):
+                self.__disable_single_column(column)
+
+    def __disable_single_column(self, column):
+        """
+        Convenience method to disable a single column.
+        :param column: Column to disable.
         """
         self.__disabled_cells.add(column)
 
