@@ -38,6 +38,14 @@ class GameController:
         """
         return self.__player_colours[self.__current_player]
 
+    @staticmethod
+    def __row(row):
+        """
+        This basically flips the coordinates vertically.
+        :param row: Row to translate (mirror)
+        """
+        return 5 - row
+
     def __column_clicked(self, column):
         logger.info(f'Column {column} clicked!')
 
@@ -50,7 +58,7 @@ class GameController:
         logger.info(f'Valid move: (col,row)=({column},{row})')
 
         # Update the cell on the board
-        self.__game_board.update_cell(column, row, self.__current_colour)
+        self.__game_board.update_cell(column, self.__row(row), self.__current_colour)
         selected_column.append(self.__current_colour)
 
         # Check to see if we have a winner after this move
@@ -85,7 +93,7 @@ class GameController:
 
         for _ in range(1, 14):
             for col, row in four:
-                self.__game_board.update_cell(col, row, colours[ccol])
+                self.__game_board.update_cell(col, self.__row(row), colours[ccol])
 
             sleep(randint(30, 80) / 1000)
             ccol = 1 - ccol

@@ -27,7 +27,6 @@ class GameBoard(EasyCanvas):
         offs = 15
         for col in range(7):
             for row in range(6):
-                row = 5 - row
                 fill = self.DEFAULT_COLOUR  # greyish
                 x = offs + col * diam
                 y = offs + row * diam
@@ -42,7 +41,7 @@ class GameBoard(EasyCanvas):
                 self.__cells[col][row] = circle
 
                 # Create tag for circle
-                tag = f'gb-circle-{col}-{5 - row}'
+                tag = f'gb-circle-{col}-{row}'
 
                 # Bind ButtonRelease event handler to tag
                 self.tag_bind(tag, '<ButtonRelease-1>',
@@ -77,7 +76,7 @@ class GameBoard(EasyCanvas):
         :param row: row of cell to update
         :param colour: colour to set in selected cell
         """
-        cell = self.__cells[col][5 - row]
+        cell = self.__cells[col][row]
         self.itemconfig(cell, fill=colour)
         self.master.update()
 
