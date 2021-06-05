@@ -60,9 +60,10 @@ class FourInARow:
         "four in a row"s that could possibly be made when that
         cell is updated.
         """
-        def st(acc, key):
+        def fltr(acc, key):
             """
-            Create a list of "four in a row"s that contain the cell {key}
+            Create a list of "four in a row"s that contain the cell
+            {key} by using the {filter} function inside a lambda.
             :param acc: Accumulator (dictionary) to update
             :param key: The value to use as key and as filtering item
             :return: Updated accumulator
@@ -76,7 +77,7 @@ class FourInARow:
                      for row in range(self.__rows)
                      ]
 
-        return reduce(st, all_cells, {})
+        return reduce(fltr, all_cells, {})
 
     def __get_horizontal_fours(self):
         """
