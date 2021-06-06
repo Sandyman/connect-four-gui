@@ -23,8 +23,7 @@ class HighScores:
         :param score:
         :return:
         """
-        return len(self.__high_scores) < self.__max_scores or \
-               self.__high_scores[-1][0] >= score
+        return not self.__high_scores or score <= self.__high_scores[-1][0]
 
     def add_high_score(self, score, initials):
         """
