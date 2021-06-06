@@ -3,6 +3,8 @@ from breezypythongui import EasyFrame
 from drop_row import DropRow
 from game_board import GameBoard
 from game_controller import GameController
+from player import Player
+from player_list import PlayerList
 
 logging.basicConfig(level=logging.INFO)
 
@@ -23,7 +25,11 @@ class Connect4(EasyFrame):
         game_board = GameBoard(self, 590, 510)
         self.addCanvas(game_board, column=0, row=2)
 
-        self.__game_controller = GameController(drop_row, game_board)
+        # Create Player objects and PlayerList
+        p1, p2 = Player('yellow'), Player('red')
+        player_list = iter(PlayerList(p1, p2))
+
+        self.__game_controller = GameController(drop_row, game_board, player_list)
 
 
 def main():
