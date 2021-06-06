@@ -23,7 +23,7 @@ class GameController:
         self.__drop_row = drop_row
         self.__game_board = game_board
 
-        # Create player list and easy way to move through player turns (iterate)
+        # Create player list as an easy way to move through player turns (iterate)
         players = PlayerList(Player(p1), Player(p2))
         self.__players = iter(players)
         self.__current_player = next(self.__players)
