@@ -10,6 +10,7 @@ class HighScores:
     score values. High, in this occasion, therefore means
     better.
     """
+
     def __init__(self, count=10):
         self.__max_scores = count
         self.__high_scores = list()
@@ -28,7 +29,7 @@ class HighScores:
     def add_high_score(self, score, initials):
         """
         Add high scores to the high score table. If a score is
-        added that equals an existing score, than the new
+        added that equals an existing score, then the new
         score takes precedence over the old score.
 
         :param score: The score to store
