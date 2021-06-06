@@ -1,6 +1,7 @@
 import logging
 from random import randint
 from time import sleep
+from column import Column
 from drop_row import DropRow
 from four_in_a_row import FourInARow
 from game_board import GameBoard
@@ -28,7 +29,7 @@ class GameController:
 
         drop_row.set_click_handler(self.__column_clicked)
 
-        self.__columns = [list() for _ in range(self.COLUMNS)]
+        self.__columns = [Column(size=self.ROWS) for _ in range(self.COLUMNS)]
 
     @property
     def __current_colour(self):
@@ -41,25 +42,29 @@ class GameController:
     @staticmethod
     def __row(row):
         """
-        This basically flips the coordinates vertically.
+        This basically flips the coordinates vertically:
+
+            0 -> 5, 1 -> 4, ... 5 -> 0
+
         :param row: Row to translate (mirror)
         """
-        return 5 - row
+        return GameController.ROWS - 1 - row
 
     def __column_clicked(self, column):
         logger.info(f'Column {column} clicked!')
 
         selected_column = self.__columns[column]
-        row = len(selected_column)
-        if row >= self.ROWS:
+        if selected_column.is_full:
             logger.warning(f'Column {column} is full!')
             return
+
+        # Add current player's colour and retrieve row it was placed in
+        row = selected_column.add(self.__current_colour)
 
         logger.info(f'Valid move: (col,row)=({column},{row})')
 
         # Update the cell on the board
         self.__game_board.update_cell(column, self.__row(row), self.__current_colour)
-        selected_column.append(self.__current_colour)
 
         # Check to see if we have a winner after this move
         winning_four = self.__check_four_in_a_row(column, row)
@@ -75,7 +80,7 @@ class GameController:
             # TODO: Show message that we have a winner
         else:
             # Disable the column if it's full
-            if len(selected_column) == self.ROWS:
+            if selected_column.is_full:
                 logger.info(f'Disabling column {column} since it\'s full.')
                 self.__drop_row.disable_column(column)
 
