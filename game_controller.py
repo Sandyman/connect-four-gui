@@ -24,7 +24,8 @@ class GameController:
         self.__game_board = game_board
 
         # Create player list as an easy way to move through player turns (iterate)
-        players = PlayerList(Player(p1), Player(p2))
+        p1, p2 = Player(p1), Player(p2)
+        players = PlayerList(p1, p2)
         self.__players = iter(players)
         self.__current_player = next(self.__players)
 
@@ -33,6 +34,9 @@ class GameController:
         drop_row.set_click_handler(self.__column_clicked)
 
         self.__columns = [Column(size=self.ROWS) for _ in range(self.COLUMNS)]
+
+        # Start player 1's turn
+        p1.start_turn()
 
     @property
     def __current_colour(self):
@@ -61,6 +65,8 @@ class GameController:
             logger.warning(f'Column {column} is full!')
             return
 
+        self.__current_player.end_turn()
+
         # Add current player's colour and retrieve row it was placed in
         row = selected_column.add(self.__current_colour)
 
@@ -81,6 +87,7 @@ class GameController:
             self.__flash_cells(winning_four, self.__current_colour)
 
             # TODO: Show message that we have a winner
+            logger.info(f'The winner scored {self.__current_player.score} points')
         else:
             # Disable the column if it's full
             if selected_column.is_full:
@@ -89,6 +96,7 @@ class GameController:
 
             # Next player is up
             self.__next_player()
+            self.__current_player.start_turn()
 
     def __flash_cells(self, four, colour):
         """
