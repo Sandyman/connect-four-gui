@@ -21,15 +21,16 @@ class GameController:
         self.__drop_row = drop_row
         self.__game_board = game_board
 
-        # Create player list as an easy way to move through player turns (iterate)
+        # The players object is an iterable
         self.__players = players
         self.__current_player = next(self.__players)
 
+        # Set active colour for drop row to current player's colour
         self.__drop_row.set_active_colour(self.__current_colour)
 
-        drop_row.set_click_handler(self.__column_clicked)
-
+        # Create columns and set click handler for the drop row
         self.__columns = [Column(size=self.ROWS) for _ in range(self.COLUMNS)]
+        drop_row.set_click_handler(self.__column_clicked)
 
         # Start turn for first player
         self.__current_player.start_turn()
