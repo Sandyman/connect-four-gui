@@ -5,6 +5,7 @@ from column import Column
 from drop_row import DropRow
 from four_in_a_row import FourInARow
 from game_board import GameBoard
+from player import Player
 from player_list import PlayerList
 
 logger = logging.getLogger(__name__)
@@ -23,7 +24,7 @@ class GameController:
         self.__game_board = game_board
 
         # Create player list and easy way to move through player turns (iterate)
-        players = PlayerList(p1, p2)
+        players = PlayerList(Player(p1), Player(p2))
         self.__players = iter(players)
         self.__current_player = next(self.__players)
 
@@ -39,7 +40,7 @@ class GameController:
         Get the current colour based on the current player
         :return: Colour for current player
         """
-        return self.__current_player
+        return self.__current_player.colour
 
     @staticmethod
     def __row(row):
