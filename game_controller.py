@@ -106,7 +106,9 @@ class GameController:
 
         for _ in range(1, 14):
             for col, row in four:
-                self.__game_board.update_cell(col, self.__row(row), colours[ccol])
+                self.__game_board.update_cell(col, self.__row(row),
+                                              colour=colours[ccol],
+                                              update_now=True)
 
             # Wait for a really short time
             sleep(randint(30, 80) / 1000)
