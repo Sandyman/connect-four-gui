@@ -6,7 +6,8 @@ from game_controller import GameController
 from player import Player
 from player_list import PlayerList
 
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 class Connect4(EasyFrame):
@@ -41,8 +42,16 @@ class Connect4(EasyFrame):
                                     self.COLUMNS, self.ROWS)
         self.__game_controller = controller
 
-    def __game_over(self, score=None):
-        pass
+    def game_over(self, player=None):
+        """
+        Called by the GameController when the game is over. If
+        there was a winner, the player argument is a reference
+        to the winning player, otherwise it's set to None.
+
+        :param player: Player who won the game
+        """
+        score = None if player is None else player.score
+        logger.info(f'Game over. Score={score}.')
 
 
 def main():

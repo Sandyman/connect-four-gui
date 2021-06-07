@@ -86,6 +86,9 @@ class GameController:
 
             # TODO: Show message that we have a winner
             logger.info(f'The winner scored {self.__current_player.score} points')
+
+            # Inform parent that the game has ended
+            self.__parent.game_over(self.__current_player)
         else:
             # Disable the column if it's full
             if selected_column.is_full:
