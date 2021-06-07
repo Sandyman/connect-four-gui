@@ -82,13 +82,16 @@ class GameController:
         if winning_four is not None:
             logger.info('We have a winner!')
 
+            # Disable all column before showing the winning row
+            self.__drop_row.disable_column(column=None)
+
             # Visual indication of the winning row
             self.__flash_cells(winning_four, self.__current_colour)
 
             logger.info(f'The winner scored {self.__current_player.score} points')
 
             # Disable all column and inform parent that it's game over
-            self.__game_over(self.__current_player)
+            self.__parent.game_over(self.__current_player)
         else:
             # Disable the column if it's full
             if selected_column.is_full:
@@ -97,21 +100,13 @@ class GameController:
 
                 # Check whether the whole board is full (game over if so)
                 if self.__is_board_full():
-                    self.__game_over(None)
+                    self.__drop_row.disable_column(column=None)
+                    self.__parent.game_over(None)
                     return
 
             # Next player is up
             self.__next_player()
             self.__current_player.start_turn()
-
-    def __game_over(self, winner):
-        """
-        Disable all columns and inform parent that it's game over.
-
-        :param winner: The actual winner or None if it's a tie
-        """
-        self.__drop_row.disable_column(column=None)
-        self.__parent.game_over(winner)
 
     def __disable_column(self, column):
         """
