@@ -125,6 +125,9 @@ class DropRow(EasyCanvas):
         """
         self.__click_handler = handler
 
+    def reset(self):
+        pass
+
     def __on_click(self, column):
         """
         Private function that is called when a mouse click event
