@@ -93,14 +93,15 @@ class GameController:
             # Disable all column and inform parent that it's game over
             self.__parent.game_over(self.__current_player)
         else:
-            # Disable the column if it's full
             if selected_column.is_full:
                 logger.info(f'Disabling column {column} since it\'s full.')
+
+                # Disable the column because it's full
                 self.__disable_column(column)
 
                 # Check whether the whole board is full (game over if so)
                 if self.__is_board_full():
-                    logger.info("The board is full. It's a tie.")
+                    logger.info("The whole board is full. So, it's a tie.")
 
                     self.__drop_row.disable_column(column=None)
                     self.__parent.game_over(None)
