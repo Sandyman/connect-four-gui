@@ -41,7 +41,7 @@ class Connect4(EasyFrame):
                                     self.COLUMNS, self.ROWS)
         self.__game_controller = controller
 
-    def __game_over(self):
+    def __game_over(self, score=None):
         pass
 
 
