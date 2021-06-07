@@ -15,21 +15,34 @@ class Connect4(EasyFrame):
     four chips of their own colour in a row. "In a row" means
     horizontally, vertically, or diagonally.
     """
+    COLUMNS = 7
+    ROWS = 6
+
     def __init__(self):
         EasyFrame.__init__(self, title="Connect 4!", background='blue',
                            borderwidth=0, highlightthickness=0)
 
-        drop_row = DropRow(self, 590, 100)
+        # Create the drop (from where we "drop" the coloured chips)
+        drop_row = DropRow(self, 590, 100, columns=self.COLUMNS)
         self.addCanvas(drop_row, column=0, row=1)
 
-        game_board = GameBoard(self, 590, 510)
+        # Create the actual game board
+        game_board = GameBoard(self, 590, 510, columns=self.COLUMNS,
+                               rows=self.ROWS)
         self.addCanvas(game_board, column=0, row=2)
 
-        # Create Player objects and PlayerList
+        # Create Player objects, PlayerList, and iterator
         p1, p2 = Player('yellow'), Player('red')
         player_list = iter(PlayerList(p1, p2))
 
-        self.__game_controller = GameController(drop_row, game_board, player_list)
+        # The controller ties it all together
+        controller = GameController(self, drop_row,
+                                    game_board, player_list,
+                                    self.COLUMNS, self.ROWS)
+        self.__game_controller = controller
+
+    def __game_over(self):
+        pass
 
 
 def main():

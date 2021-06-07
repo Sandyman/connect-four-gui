@@ -23,18 +23,17 @@ class DropRow(EasyCanvas):
     to grey and will prevent any click events from being
     generated for that column.
     """
-    COLUMNS = 7
     GREYISH = '#707080'
 
-    def __init__(self, parent, width, height):
+    def __init__(self, parent, width, height, columns):
         EasyCanvas.__init__(self, parent, width=width, height=height, background='blue',
                             borderwidth=0, highlightthickness=0, cursor='sb_down_arrow')
 
         # Number of columns
-        self.__n_columns = self.COLUMNS
+        self.__columns = columns
 
         # This list will hold the cells
-        self.__cells = [None] * self.__n_columns
+        self.__cells = [None] * self.__columns
 
         # The set of cells that are disabled (full columns)
         self.__disabled_cells = set()
@@ -53,7 +52,7 @@ class DropRow(EasyCanvas):
         diam = 80
         offs = 15
         y = offs
-        for col in range(self.__n_columns):
+        for col in range(self.__columns):
             x = offs + col * diam
 
             # Give the impression of depth
@@ -79,7 +78,7 @@ class DropRow(EasyCanvas):
         if column is not None:
             self.__disable_single_column(column)
         else:
-            for column in range(self.__n_columns):
+            for column in range(self.__columns):
                 self.__disable_single_column(column)
 
     def __disable_single_column(self, column):
@@ -112,7 +111,7 @@ class DropRow(EasyCanvas):
         """
         if not column:
             # Update all columns
-            for col in range(self.__n_columns):
+            for col in range(self.__columns):
                 self.__configure_cell(colour, col)
         else:
             # Update only column addressed with argument {column}

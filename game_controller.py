@@ -11,13 +11,15 @@ logger.setLevel(logging.INFO)
 
 
 class GameController:
-    COLUMNS = 7
-    ROWS = 6
-
     DARK_GREY = '#505070'
 
-    def __init__(self, drop_row: DropRow, game_board: GameBoard, players):
-        self.__four_in_a_row = FourInARow(cols=self.COLUMNS, rows=self.ROWS)
+    def __init__(self, parent, drop_row: DropRow, game_board: GameBoard,
+                 players, columns, rows):
+        self.__parent = parent
+        self.__columns = columns
+        self.__rows = rows
+
+        self.__four_in_a_row = FourInARow(columns, rows)
         self.__drop_row = drop_row
         self.__game_board = game_board
 
@@ -29,7 +31,7 @@ class GameController:
         self.__drop_row.set_active_colour(self.__current_colour)
 
         # Create columns and set click handler for the drop row
-        self.__columns = [Column(size=self.ROWS) for _ in range(self.COLUMNS)]
+        self.__columns = [Column(size=rows) for _ in range(columns)]
         drop_row.set_click_handler(self.__column_clicked)
 
         # Start turn for first player
@@ -43,8 +45,7 @@ class GameController:
         """
         return self.__current_player.colour
 
-    @staticmethod
-    def __row(row):
+    def __row(self, row):
         """
         This basically flips the coordinates vertically:
 
@@ -52,7 +53,7 @@ class GameController:
 
         :param row: Row to translate (mirror)
         """
-        return GameController.ROWS - 1 - row
+        return self.__rows - 1 - row
 
     def __column_clicked(self, column):
         logger.info(f'Column {column} clicked!')

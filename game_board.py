@@ -11,25 +11,26 @@ class GameBoard(EasyCanvas):
     using the method {update_cell}. If a cell is clicked, the click
     handler is called (if it is set).
     """
-    COLUMNS = 7
-    ROWS = 6
     DEFAULT_COLOUR = '#707080'
 
-    def __init__(self, parent, width, height):
+    def __init__(self, parent, width, height, columns, rows):
         # The parent is accessible as {self.master} after the next statement
         EasyCanvas.__init__(self, parent, width=width, height=height, background='blue',
                             borderwidth=0, highlightthickness=0)
+
+        self.__columns = columns
+        self.__rows = rows
 
         # Placeholder for click handler
         self.__click_handler = None
 
         # This 2D list will hold all cells
-        self.__cells = [list([None] * self.ROWS) for _ in range(self.COLUMNS)]
+        self.__cells = [list([None] * rows) for _ in range(columns)]
 
         diam = 80
         offs = 15
-        for col in range(self.COLUMNS):
-            for row in range(self.ROWS):
+        for col in range(columns):
+            for row in range(rows):
                 fill = self.DEFAULT_COLOUR  # greyish
                 x = offs + col * diam
                 y = offs + row * diam
@@ -98,8 +99,8 @@ class GameBoard(EasyCanvas):
         Reset the entire board to a predefined state. Useful to
         implement "Play again?"
         """
-        for col in range(self.COLUMNS):
-            for row in range(self.ROWS):
+        for col in range(self.__columns):
+            for row in range(self.__rows):
                 self.update_cell(col, row)
 
 
