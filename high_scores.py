@@ -4,7 +4,7 @@ from functools import reduce
 class HighScores:
     """
     A class that stores high scores as (score, initials)-tuple,
-    for example, (32412, 'ah ').
+    for example, (32412, 'ahj').
 
     This class assumes that "high" scores are actually lower
     score values. High, in this occasion, therefore means
