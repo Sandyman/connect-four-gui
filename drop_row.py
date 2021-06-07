@@ -23,6 +23,7 @@ class DropRow(EasyCanvas):
     to grey and will prevent any click events from being
     generated for that column.
     """
+    COLUMNS = 7
     GREYISH = '#707080'
 
     def __init__(self, parent, width, height):
@@ -30,7 +31,7 @@ class DropRow(EasyCanvas):
                             borderwidth=0, highlightthickness=0, cursor='sb_down_arrow')
 
         # Number of columns
-        self.__n_columns = 7
+        self.__n_columns = self.COLUMNS
 
         # This list will hold the cells
         self.__cells = [None] * self.__n_columns
