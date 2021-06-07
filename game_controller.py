@@ -100,6 +100,8 @@ class GameController:
 
                 # Check whether the whole board is full (game over if so)
                 if self.__is_board_full():
+                    logger.info("The board is full. It's a tie.")
+
                     self.__drop_row.disable_column(column=None)
                     self.__parent.game_over(None)
                     return
