@@ -11,9 +11,12 @@ class GameBoard(EasyCanvas):
     using the method {update_cell}. If a cell is clicked, the click
     handler is called (if it is set).
     """
+    COLUMNS = 7
+    ROWS = 6
     DEFAULT_COLOUR = '#707080'
 
     def __init__(self, parent, width, height):
+        # The parent is accessible as {self.master} after the next statement
         EasyCanvas.__init__(self, parent, width=width, height=height, background='blue',
                             borderwidth=0, highlightthickness=0)
 
@@ -21,12 +24,12 @@ class GameBoard(EasyCanvas):
         self.__click_handler = None
 
         # This 2D list will hold all cells
-        self.__cells = [list([None] * 6) for _ in range(7)]
+        self.__cells = [list([None] * self.ROWS) for _ in range(self.COLUMNS)]
 
         diam = 80
         offs = 15
-        for col in range(7):
-            for row in range(6):
+        for col in range(self.COLUMNS):
+            for row in range(self.ROWS):
                 fill = self.DEFAULT_COLOUR  # greyish
                 x = offs + col * diam
                 y = offs + row * diam
@@ -52,7 +55,8 @@ class GameBoard(EasyCanvas):
 
     def __on_click(self, col, row):
         """
-        Click event occurred. Calls the click handler is available.
+        Click event occurred. Calls the click handler if set..
+
         :param col: column of cell that received mouse click
         :param row: row of cell that received mouse click
         """
@@ -65,34 +69,57 @@ class GameBoard(EasyCanvas):
         """
         Set the click handler. The click handler should accept two
         arguments: column and row.
+
         :param handler: Function that handles click events
         """
         self.__click_handler = handler
 
-    def update_cell(self, col, row, colour=DEFAULT_COLOUR):
+    def update_cell(self, col, row, colour=DEFAULT_COLOUR, update_now=False):
         """
-        Update a cell at location (col, row) with a certain colour.
+        Update a cell at location (col, row) with a certain colour. If the
+        {update_now} argument is set to True, the event loop's update
+        method is called immediately. This is useful inside a loop when the
+        cell needs to be updated multiple times before returning control to
+        the event loop itself.
+
         :param col: column of cell to update
         :param row: row of cell to update
         :param colour: colour to set in selected cell
+        :param update_now: call the event loop's update function immediately
         """
         cell = self.__cells[col][row]
         self.itemconfig(cell, fill=colour)
-        self.master.update()
+
+        if update_now:
+            self.master.update()
+
+    def reset(self):
+        """
+        Reset the entire board to a predefined state. Useful to
+        implement "Play again?"
+        """
+        for col in range(self.COLUMNS):
+            for row in range(self.ROWS):
+                self.update_cell(col, row)
 
 
 def main():
     colours = ['red', 'yellow']
     current = 0
+    count = 0
 
     f = EasyFrame()
     game = GameBoard(f, 590, 510)
     f.addCanvas(game)
 
     def handler(col, row):
-        nonlocal current
+        nonlocal current, count
         game.update_cell(col, row, colours[current])
         current = 1 - current
+        count += 1
+        if count == 10:
+            count = 0
+            game.reset()
 
     game.set_click_handler(handler)
     f.mainloop()
